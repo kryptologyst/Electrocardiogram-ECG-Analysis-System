@@ -1,0 +1,110 @@
+# ECG Analysis System Configuration
+
+# Model Configuration
+model:
+  name: "ECGResNet"  # Options: ECGCNN, ECGResNet, ECGTransformer
+  input_length: 250
+  num_classes: 4
+  dropout_rate: 0.5
+  
+  # ResNet specific
+  resnet:
+    layers: [2, 2, 2, 2]
+    
+  # Transformer specific
+  transformer:
+    d_model: 128
+    nhead: 8
+    num_layers: 4
+
+# Data Configuration
+data:
+  synthetic: true
+  num_samples: 2000
+  seq_length: 250
+  batch_size: 32
+  num_workers: 4
+  
+  # Preprocessing
+  preprocessing:
+    sampling_rate: 250
+    filter_low: 0.5
+    filter_high: 40.0
+    normalize: true
+  
+  # Class names
+  class_names:
+    - "Normal"
+    - "Atrial Fibrillation"
+    - "Ventricular Tachycardia"
+    - "Other Arrhythmia"
+
+# Training Configuration
+training:
+  num_epochs: 50
+  learning_rate: 0.001
+  weight_decay: 1e-4
+  grad_clip: 1.0
+  
+  # Loss function
+  loss_function: "combined"  # Options: cross_entropy, focal, label_smoothing, dice, combined
+  loss_kwargs:
+    ce_weight: 1.0
+    focal_weight: 0.5
+    dice_weight: 0.3
+    smoothing: 0.1
+    gamma: 2.0
+  
+  # Scheduler
+  scheduler: true
+  scheduler_factor: 0.5
+  scheduler_patience: 5
+  
+  # Early stopping
+  patience: 10
+  min_delta: 0.001
+
+# Evaluation Configuration
+evaluation:
+  output_dir: "outputs"
+  checkpoint_dir: "checkpoints"
+  log_dir: "runs"
+  
+  # Metrics to compute
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1_score"
+    - "auc_roc"
+    - "auc_pr"
+    - "brier_score"
+    - "ece"
+
+# Explainability Configuration
+explainability:
+  methods:
+    - "integrated_gradients"
+    - "saliency"
+    - "gradient_shap"
+  num_samples: 10
+
+# Uncertainty Estimation
+uncertainty:
+  monte_carlo_samples: 100
+  ensemble_size: 5
+
+# Device Configuration
+device:
+  use_cuda: true
+  use_mps: true  # Apple Silicon
+  fallback_cpu: true
+
+# Reproducibility
+seed: 42
+
+# Logging
+logging:
+  level: "INFO"
+  log_interval: 10
+  save_interval: 5
